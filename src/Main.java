@@ -1,7 +1,4 @@
-//lstBanco.size();
-//lstBanco.remove();
-//lstBanco.add(c1);
-//List<CuentaBancaria> lstBanco= new ArrayList<>();
+
 import java.util.*;
 
 
