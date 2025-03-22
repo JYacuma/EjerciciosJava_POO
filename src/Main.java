@@ -4,16 +4,6 @@
 //List<CuentaBancaria> lstBanco= new ArrayList<>();
 import java.util.*;
 
-//CORRECIONES:
-//
-//SE CORRIGIO EL ERROR DE LA CREACION DE DOS OBJETOS, SE CREA EL PRIMER OBJETO CON EL CASE 1.
-//SE MEJORO EL DISEÑO VISUAL DEL MENU, INFORMACION DE CUENTA(S), RETIRAR Y DEPOSITAR.
-//SE AGREGO NUEVOS LIMITES A RETIRAR: MINIMO $10,000 Y NO MAS DEL SUELDO DE LA CUENTA,
-//SE CANCELA LA OPCION RETIRAR SI LA CUENTA NO TIENE $10,000 O MAS.
-//SE AGREGO NUEVOS LIMITES A DEPOSITAR: MINIMO $10,000 Y NO MAS DE $1,000,000.
-//SE AÑADIO UN NUEVO CASE (CASE 6): TRANSFERIR SALDO DE UNA CUENTA A OTRA.
-//SE AÑADIO LA OPCION DE CUENTA NO ENCONTARDA, ESTO SE VE EN LOS CASE 3,4,5;
-//EL CASE 6 TIENE SU PROPIO METODO PARA MOSTRAR SI UNA O AMBAS CUENTAS NO SE HAN ENCONTRADO.
 
 
 public class Main {
@@ -21,10 +11,10 @@ public class Main {
 
         Scanner teclado = new Scanner(System.in);
         int op;
-        double monto;
-        int estado=1;
-        List<CuentaBancaria> lstBanco= new ArrayList<>();
+        int estado = 1;
 
+        List<RegistrodeEmpleados> lstresgistrofijo = new ArrayList<>();
+        List<RegistrodeEmpleados> lstresgistrohoras = new ArrayList<>();
 
 
 
@@ -34,16 +24,13 @@ public class Main {
             System.out.println("""
                     
                     |====================================|
-                    |          CUENTA BANCARIA           |
+                    |       REGISTRO DE EMPLEADOS        |
                     |====================================|
                     |                                    |
-                    | [1] CREAR CUENTA                   |
-                    | [2] MOSTRAR CUENTAS                |
-                    | [3] MOSTRAR UNA CUENTA ESPECIFICA  |
-                    | [4] DEPOSITAR A UNA CUENTA         |
-                    | [5] RETIRAR A UNA CUENTA           |
-                    | [6] TRANSFERIR SALDO A UNA CUENTA  |
-                    | [7] TERMINAR                       |
+                    | [1] REGISTRAR EMPLEADO             |
+                    | [2] BUSCAR EMPLEADO                |
+                    | [3] MOSTRAR EMPLEADOS REGISTRADOS  |
+                    | [4] SALIR                          |
                     |                                    |
                     |====================================|
                     """);
@@ -53,274 +40,146 @@ public class Main {
             teclado.nextLine();
 
             switch (op) {
-                case 1 -> {
-
+                case 1->{
+                    int tipo;
                     System.out.println("""
                     |====================================|
-                    |     INGRESE NOMBRE DEL TITULAR     |
+                    | [1] EMPLEADO POR SALARIO FIJO      |
+                    | [2] EMPLEADO POR SALARIO HORAS     |
                     |====================================|
                     """);
-                    String Titular= teclado.next();
-
-                    System.out.println("""
-                    |====================================|
-                    |     INGRESE SALDO DEL TITULAR      |
-                    |====================================|
-                    """);
-                    double Saldo= teclado.nextDouble();
-
-                    System.out.println("""
-                    |====================================|
-                    |      INGRESE NUMERO DE CUENTA      |
-                    |====================================|
-                    """);
-                    String NumrodeCuenta=teclado.next();
-
-                    //c1 = new CuentaBancaria(c1.getTitular(), c1.getSaldo(), c1.getNumrodeCuenta());
-                    //lstBanco.add(c1);
+                    System.out.print("OPCION= ");
+                    tipo = teclado.nextInt();
+                    teclado.nextLine();
+                    if(tipo==1) {
 
 
-                    lstBanco.add(new CuentaBancaria(Titular, Saldo, NumrodeCuenta));
+                        System.out.println("""
+                                |====================================|
+                                |    INGRESE NOMBRE DEL EMPLEADO     |
+                                |====================================|
+                                """);
+                        String nombre = teclado.next();
+
+                        System.out.println("""
+                                |====================================|
+                                |     INGRESE EDAD DEL EMPLEADO      |
+                                |====================================|
+                                """);
+                        int edad = teclado.nextInt();
+                        int salariofijo = 2100000;
+
+                        lstresgistrofijo.add(new EmpleadoSalarioFijo(nombre, edad, salariofijo));
+
+                    }if (tipo==2){
+
+                        System.out.println("""
+                                |====================================|
+                                |    INGRESE NOMBRE DEL EMPLEADO     |
+                                |====================================|
+                                """);
+                        String nombre = teclado.next();
+
+                        System.out.println("""
+                                |====================================|
+                                |     INGRESE EDAD DEL EMPLEADO      |
+                                |====================================|
+                                """);
+                        int edad = teclado.nextInt();
+                        System.out.println("""
+                                |====================================|
+                                |   INGRESE LAS HORAS DEL EMPLEADO   |
+                                |====================================|
+                                """);
+                        int HorasTrabajadas = teclado.nextInt();
+                        int pagoporhora=HorasTrabajadas*98000;
+
+
+
+
+                        lstresgistrohoras.add(new EmpleadoSalarioporHoras(nombre, edad, HorasTrabajadas,pagoporhora));
+
+
+                    }if(tipo<1 && tipo>2){
+                        System.out.println("OPCION NO DISPONIBLE");
+                    }
 
                     estado=1;
 
+                }
+                case 2->{
+                    String nEmpleado;
+                    boolean nombreEmpleado = false;
 
+                    System.out.println("""
+                                |====================================|
+                                |         DATOS DEL EMPLEADO         |
+                                |====================================|
+                                """);
+
+                    do {
+
+                        System.out.println("INGRESE EL NOMBRE DEL EMPLEADO");
+                        nEmpleado= teclado.next();
+                        for (int i = 0; i < lstresgistrofijo.size(); i++) {
+                            if (lstresgistrofijo.get(i).getNombre().equalsIgnoreCase(nEmpleado)) {
+                                lstresgistrofijo.get(i).mostarInfo();
+                                nombreEmpleado = true;
+                                break;
+                            }
+                        }
+                        if (!nombreEmpleado) {
+                            for (int a = 0; a < lstresgistrohoras.size(); a++) {
+                                if (lstresgistrohoras.get(a).getNombre().equalsIgnoreCase(nEmpleado)) {
+                                    lstresgistrohoras.get(a).mostarInfo();
+                                    nombreEmpleado = true;
+                                    break;
+                                }
+                            }
+
+                        }
+                        if (!nombreEmpleado) {
+                            System.out.println("NOMBRE DEL EMPLEADO NO ENCONTRADO. INTENTE NUEVAMENTE.");
+                        }
+                    }while (!nombreEmpleado);
+
+                    System.out.println("PRESIONA 1 PARA VOLVER AL MENU");
+                    estado= teclado.nextInt();
 
 
                 }
-                case 2 -> {
+                case 3->{
                     int contador=1;
 
                     System.out.println("""
                     |====================================|
-                    |     INFORMACION DE LAS CUENTAS     |
+                    |    INFORMACION DE LOS EMPLEADOS    |
                     |====================================|
                     """);
-                    for(CuentaBancaria cu: lstBanco){
-                        System.out.println(" CUENTA " + contador +":");
+                    System.out.println("      EMPLEADOS CON SALARIO FIJO");
+                    System.out.println("|====================================|");
 
-                        cu.mostarInfo2();
+                    for(RegistrodeEmpleados empleado: lstresgistrofijo){
+                        System.out.println(" EMPLEADO " + contador +":");
+                        empleado.mostarInfo();
+                        contador++;
+                    }
+                    System.out.println("|====================================|");
+                    System.out.println("   ");
+                    System.out.println("   EMPLEADOS CON SALARIO POR HORAS");
+                    System.out.println("|====================================|");
+
+                    for(RegistrodeEmpleados empleado: lstresgistrohoras){
+                        System.out.println(" EMPLEADO " + contador +":");
+                        empleado.mostarInfo();
                         contador++;
                     }
                     System.out.println("PRESIONA 1 PARA VOLVER AL MENU");
                     estado= teclado.nextInt();
 
 
-
                 }
-                case 3 ->{
-                    String nCuneta;
-                    boolean cuentaEncontrada = false;
-
-                    do {
-
-                        System.out.println("INGRESE NUMERO DE CUENTA");
-                        nCuneta = teclado.next();
-                        for (int i = 0; i < lstBanco.size(); i++) {
-                            if (lstBanco.get(i).getNumrodeCuenta().equalsIgnoreCase(nCuneta)) {
-                                lstBanco.get(i).mostarInfo();
-                                cuentaEncontrada = true;
-                                break;
-                            }
-                            if (!cuentaEncontrada) {
-                                System.out.println("CUENTA NO ENCONTRADA. INTENTE NUEVAMENTE.");
-                            }
-                        }
-                    }while (!cuentaEncontrada);
-
-                    System.out.println("PRESIONA 1 PARA VOLVER AL MENU");
-                    estado= teclado.nextInt();
-                    
-                }
-                case 4 ->{
-                    String depositar;
-                    boolean cuentaEncontrada = false;
-                    System.out.println("""
-                    |====================================|
-                    |      DEPOSITAR EN UNA CUENTA       |
-                    |====================================|
-                    | NO SE PERMITE:                     |
-                    | DEPOSITOS NEGATIVOS                |
-                    | DEPOSITOS MENORES A $10,000        |
-                    | DEPOSITOS MAYORES A $10,000,000    |
-                    |====================================|
-                    """);
-                    do {
-                        System.out.println("INGRESE NUMERO DE CUENTA");
-                        depositar = teclado.next();
-                        System.out.println("  ");
-                        for (int i = 0; i < lstBanco.size(); i++) {
-
-                            if (lstBanco.get(i).getNumrodeCuenta().equalsIgnoreCase(depositar)) {
-                                System.out.println("INGRESE LA CANTIDAD DE DEPOSITO");
-                                monto = teclado.nextDouble();
-                                if (monto > 9999 && monto <= 10000000) {
-                                    lstBanco.get(i).depositarDinero(monto);
-                                    System.out.println("TRANSACCION EXITOSA...");
-                                    System.out.println("SALDO NUEVO: $" + lstBanco.get(i).getSaldo());
-
-                                } else {
-                                    do {
-                                        System.out.println("DEPOSITO DENEGADO");
-                                        System.out.println(" ");
-                                        System.out.println("INGRESE LA CANTIDAD DE DEPOSITO");
-                                        monto = teclado.nextDouble();
-                                        lstBanco.get(i).depositarDinero(monto);
-                                    } while (monto <= 9999 || monto > 10000000);
-                                    System.out.println(" ");
-                                    System.out.println("TRANSACCION EXITOSA...");
-                                    System.out.println("SALDO NUEVO: $" + lstBanco.get(i).getSaldo());
-
-
-                                }
-                                cuentaEncontrada = true;
-                                break;
-
-                            }
-                            if (!cuentaEncontrada) {
-                                System.out.println("CUENTA NO ENCONTRADA. INTENTE NUEVAMENTE.");
-                            }
-                        }
-                    }while (!cuentaEncontrada);
-                    System.out.println("   ");
-                    System.out.println("PRESIONA 1 PARA VOLVER AL MENU");
-                    estado= teclado.nextInt();
-
-
-
-                }
-                case 5 ->{
-                    String retirardinero;
-                    boolean cuentaEncontrada = false;
-                    System.out.println("""
-                    |====================================|
-                    |       RETIRAR EN UNA CUENTA        |
-                    |====================================|
-                    | NO SE PERMITE:                     |
-                    | RETIROS NEGATIVOS                  |
-                    | RETIROS MENORES A $10,000          |
-                    | RETIROS MAYORES AL SALDO           |
-                    |====================================|
-                    """);
-                    do {
-                        System.out.println("INGRESE NUMERO DE CUENTA");
-                        retirardinero = teclado.next();
-                        System.out.println("  ");
-                        for (int i = 0; i < lstBanco.size(); i++) {
-
-                            if (lstBanco.get(i).getNumrodeCuenta().equalsIgnoreCase(retirardinero)) {
-                                if (lstBanco.get(i).getSaldo() < 10000) {
-                                    System.out.println("TRANSACION NO DISPONIBLE");
-                                    System.out.println("SALDO DE LA CUENTA: $" + lstBanco.get(i).getSaldo());
-                                    System.out.println("RETIRO DISPONIBLE CON UN SALDO MAYOR O IGUAL A $10000");
-
-
-                                } else {
-                                    System.out.println("INGRESE LA CANTIDAD DE RETIRO");
-                                    monto = teclado.nextDouble();
-                                    if (monto > 9999 && monto <= lstBanco.get(i).getSaldo()) {
-                                        lstBanco.get(i).retira(monto);
-                                        System.out.println("  ");
-                                        System.out.println("TRANSACCION EXITOSA...");
-                                        System.out.println("SALDO NUEVO: $" + lstBanco.get(i).getSaldo());
-                                    } else {
-                                        do {
-                                            System.out.println("RETIRO DENEGADO");
-                                            System.out.println(" ");
-                                            System.out.println("INGRESE LA CANTIDAD DE RETIRO");
-                                            monto = teclado.nextDouble();
-                                            lstBanco.get(i).retira(monto);
-                                        } while (monto <= 9999 && monto >= lstBanco.get(i).getSaldo());
-                                        System.out.println(" ");
-                                        System.out.println("TRANSACCION EXITOSA...");
-                                        System.out.println("SALDO NUEVO: $" + lstBanco.get(i).getSaldo());
-
-                                    }
-                                }
-                                cuentaEncontrada = true;
-                                break;
-
-                            }
-                            if (!cuentaEncontrada) {
-                                System.out.println("CUENTA NO ENCONTRADA. INTENTE NUEVAMENTE.");
-                            }
-
-                        }
-                    }while (!cuentaEncontrada);
-                    System.out.println("   ");
-                    System.out.println("PRESIONA 1 PARA VOLVER AL MENU");
-                    estado= teclado.nextInt();
-
-
-
-                }
-                case 6 ->{
-                    String cuentaOrigen;
-                    String cuentaDestino;
-                    double montoTransferencia;
-                    System.out.println("""
-                    |====================================|
-                    |   TRANSFERIR SALDO A UNA CUENTA    |
-                    |====================================|
-                    | NO SE PERMITE:                     |
-                    | TRANSFERENCIAS NEGATIVAS           |
-                    | TRANSFERENCIAS MENORES A $10,000   |
-                    | TRANSFERENCIAS MAYORES AL SALDO    |
-                    |====================================|
-                    """);
-                    System.out.println("INGRESE NUMERO DE CUENTA ORIGEN:");
-                    cuentaOrigen = teclado.next();
-                    System.out.println("INGRESE NUMERO DE CUENTA DESTINO:");
-                    cuentaDestino = teclado.next();
-
-                    CuentaBancaria origen = null, destino = null;
-
-
-                    for (CuentaBancaria cu : lstBanco) {
-                        if (cu.getNumrodeCuenta().equalsIgnoreCase(cuentaOrigen)) {
-                            origen = cu;
-                        }
-                        if (cu.getNumrodeCuenta().equalsIgnoreCase(cuentaDestino)) {
-                            destino = cu;
-                        }
-                    }
-
-                    if (origen != null && destino != null) {
-                        boolean transferenciaExitosa = false;
-                        do {
-                            System.out.println("INGRESE MONTO A TRANSFERIR (Mínimo: 10,000):");
-                            montoTransferencia = teclado.nextDouble();
-
-                            if (montoTransferencia >= 10000 && montoTransferencia <= origen.getSaldo()) {
-                                origen.retira(montoTransferencia);
-                                destino.depositarDinero(montoTransferencia);
-                                System.out.println("TRANSFERENCIA EXITOSA...");
-                                System.out.println("SALDO NUEVO DE LA CUENTA DE ORIGEN: $" + origen.getSaldo());
-                                System.out.println("SALDO NUEVO DE LA CUENTA DE DESTINO: $" + origen.getSaldo());
-
-                                transferenciaExitosa = true;
-                            } else {
-                                System.out.println("""
-                                        TRANSFERENCIA DENEGADA:
-                                         - El monto debe ser mayor o igual a 10,000.
-                                         - El monto no debe exceder el saldo disponible.
-                                        INTENTE NUEVAMENTE.
-                                        """);
-                            }
-                        } while (!transferenciaExitosa);
-                        System.out.println("TRANSFERENCIA EXITOSA...");
-                        System.out.println("SALDO NUEVO DE LA CUENTA DE ORIGEN: $" + origen.getSaldo());
-                        System.out.println("SALDO NUEVO DE LA CUENTA DE DESTINO: $" + origen.getSaldo());
-                    } else {
-                        System.out.println("UNA O AMBAS CUENTAS NO EXISTEN.");
-                    }
-                    System.out.println("   ");
-                    System.out.println("PRESIONA 1 PARA VOLVER AL MENU");
-                    estado= teclado.nextInt();
-
-
-                }
-                case 7 ->{
+                case 4->{
                     System.out.println("SALIENDO..");
                     estado = 2;
 
@@ -329,12 +188,10 @@ public class Main {
                     System.out.println("NUMERO NO VALIDO");
                 }
 
-
-
             }
-        }while(estado ==1);
 
 
+        } while (estado == 1);
 
 
     }
